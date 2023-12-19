@@ -1,44 +1,58 @@
 import React from 'react';
-// import { FcGoogle } from 'react-icons/fc';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios'
 import jwt_decode from 'jwt-decode';
-const dotenv = require("dotenv").config();
 
 
-const Login = (loggedIn) => {
-    const navigate = useNavigate()
+const Login = ({loggedIn, setLoggedIn}) => {
+    // const navigate = useNavigate()
     useEffect(()=>{
+        const handleGoogleSignUp = async (res) => {
+          console.log(res.credential);
+          var user = jwt_decode(res.credential);
+          console.log(user.email);
+
+          axios({
+            method: "post",
+            url: "http://localhost:5000/login/google",
+            headers: {},
+            data: {
+              email: user.email,
+            },
+          })
+            .then((res) => {
+              console.log(res);
+              alert("Login Successful!");
+            })
+            .catch((err) => {
+              console.log(err);
+              alert(err.response.data.error);
+            });
+
+          alert(`Welcome ${user.name}!`);
+          
+          // navigate('/home')
+        };
     
-    console.log(process.env.CLIENT_ID)
-    window.google.accounts.id.initialize({
-        client_id : "957413395116-9415jluo91928e8kfvrjthvsnvhp6ib7.apps.googleusercontent.com", 
-        callback: handleGoogleSignUp
-    })
+        console.log(process.env.CLIENT_ID)
+        window.google.accounts.id.initialize({
+            client_id : "957413395116-9415jluo91928e8kfvrjthvsnvhp6ib7.apps.googleusercontent.com", 
+            callback: handleGoogleSignUp
+        })
 
-    window.google.accounts.id.renderButton(
-        document.getElementById('signup'),
-        {
-            theme: "outline",
-            width: "344px"
-        }
-    )
+        window.google.accounts.id.renderButton(
+            document.getElementById('signup'),
+            {
+                theme: "outline",
+                width: "344px"
+            }
+        )
 
-    window.google.accounts.id.prompt()
+        window.google.accounts.id.prompt()
+        
 
     }, [])
-
-    const handleGoogleSignUp = async (res) =>{
-        console.log(res.credential)
-        var user = jwt_decode(res.credential)
-        console.log(user.name)
-        console.log(user.email)
-
-        alert(`Welcome ${user.name}!`)
-        loggedIn = true
-        navigate('/home')
-    }
 
 
     const [email, setEmail] = useState('');

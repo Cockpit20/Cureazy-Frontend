@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import ProfileDropdown from './ProfileDropdown';
+import RegisterBtnGrp from './RegisterBtnGrp';
 
-const Nav = () => {
+const Nav = (loggedIn, setLoggedIn) => {
 
   const [navbar, setNavbar] = useState(true)
   const [sectionDoctor, setSectionDoctor] = useState(false);
@@ -31,14 +33,7 @@ const Nav = () => {
         <div className="navbar-links">
             <Link className={sectionDoctor ? 'navbar-link': 'navbar-link navbar-link-active'} onClick={getDoc} to="/home">Home</Link>
             <a className={sectionDoctor ? "navbar-link navbar-link-active" : "navbar-link"} onClick={getDoc} href='#find-doc'>Get a doctor</a>
-            <div className="navbar-button-group">
-              <button className="btn-nav-secondary">
-                <Link className='link' to="/login">Login</Link>
-              </button>
-              <button className="btn-nav-primary">
-                <Link className='link-white' to="/signup">Sign Up</Link>
-              </button>
-            </div>
+        {loggedIn ? <ProfileDropdown/> : <RegisterBtnGrp/>}
         </div>
         </nav>
   );
